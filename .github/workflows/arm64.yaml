@@ -14,8 +14,6 @@ jobs:
       - run: pwd
       - name: Checkout node-duckdb
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: Setup node
         uses: actions/setup-node@v1
         with:
@@ -27,15 +25,24 @@ jobs:
           fetch-depth: 0
           repository: 'duckdb/duckdb'
           path: duckdb
-      - run: pwd && ls && cd ../.. && ls
       - run: |
           wget -q https://musl.cc/aarch64-linux-musl-cross.tgz
           tar -xf aarch64-linux-musl-cross.tgz
+      - name: Install OpenSSL 1.1.1
+        run: |
+          apt-get install build-essential checkinstall zlib1g-dev -y -qq
+          wget https://www.openssl.org/source/openssl-1.1.1n.tar.gz
+          tar -xf openssl-1.1.1n.tar.gz
+          cd openssl-1.1.1n
+          ./Configure linux-aarch64 --cross-compile-prefix=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl- --prefix=/usr/local/ssl --openssldir=/usr/local/ssl -static zlib
+          make
+          make install
+          echo "/usr/local/ssl/lib" > /etc/ld.so.conf.d/openssl-1.1.1n.conf
+          ldconfig -v
       - name: Install modules and build
         run: |
           export CC=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc
           export CXX=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-g++
-          echo $CXX
           yarn install && yarn build:duckdb && yarn build:addon
       - run: |
           zip -j build-arm64.zip build/Release
