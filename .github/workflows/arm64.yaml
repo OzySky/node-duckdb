@@ -1,0 +1,47 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+      - release/*
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: pwd
+      - name: Checkout node-duckdb
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 17
+          registry-url: https://npm.pkg.github.com/
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Restore keys from cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Checkout duckdb
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          repository: 'duckdb/duckdb'
+      - run: cd ../..
+      - run: |
+          wget https://musl.cc/aarch64-linux-musl-cross.tgz
+          tar -xf aarch64-linux-musl-cross.tgz
+      - name: Install modules and build
+        run: |
+          export CC=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc
+          export CXX=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-g++
+          yarn install
