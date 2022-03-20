@@ -26,7 +26,8 @@ jobs:
         with:
           fetch-depth: 0
           repository: 'duckdb/duckdb'
-      - run: cd ../.. && ls
+          path: duckdb
+      - run: pwd && ls && cd ../.. && ls
       - run: |
           wget -q https://musl.cc/aarch64-linux-musl-cross.tgz
           tar -xf aarch64-linux-musl-cross.tgz
