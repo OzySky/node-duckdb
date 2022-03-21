@@ -36,8 +36,8 @@ jobs:
           ./Configure linux-aarch64 --cross-compile-prefix=$(echo $AMUSL) --prefix=/usr/local/ssl --openssldir=/usr/local/ssl -static no-zlib
           sudo make
           sudo make install
-          sudo echo "/usr/local/ssl/lib" > /etc/ld.so.conf.d/openssl-1.1.1n.conf
-          ldconfig -v
+          sudo sh -c "echo '/usr/local/ssl/lib' >> /etc/ld.so.conf.d/openssl-1.1.1n.conf"
+          sudo ldconfig -v
       - name: Install modules and build
         run: |
           export CC=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc
