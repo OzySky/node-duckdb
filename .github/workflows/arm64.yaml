@@ -24,13 +24,15 @@ jobs:
           fetch-depth: 0
           repository: 'duckdb/duckdb'
           path: duckdb
-      - run: |
+      - name: Setup cross toolchain
+        run: |
           wget -q https://musl.cc/aarch64-linux-musl-cross.tgz
           tar -xf aarch64-linux-musl-cross.tgz
-      - name: Install OpenSSL 1.1.1
+      - name: Build & install OpenSSL 1.1.1
         env: 
           CXXFLAGS: -fPIC
         run: |
+          sudo apt-get remove libc6-dev -y -qq
           export AMUSL=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-
           wget https://www.openssl.org/source/openssl-1.1.1n.tar.gz
           tar -xf openssl-1.1.1n.tar.gz
@@ -40,15 +42,14 @@ jobs:
           sudo make install_sw
           sudo sh -c "echo '/usr/local/ssl/lib' >> /etc/ld.so.conf.d/openssl-1.1.1n.conf"
           sudo ldconfig -v
-      - name: Install modules and build
+      - name: Build DuckDB & node-duckdb
         env:
           OPENSSL_ROOT_DIR: /usr/local/ssl
           CXXFLAGS: -fPIC
         run: |
-          sudo apt-get remove libc6-dev -y -qq
           export CC=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc
           export CXX=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-g++
-          npm config set cmake_C `pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc && npm config set cmake_CXX `pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-g++
+          npm config set cmake_CC `pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc && npm config set cmake_CXX `pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-g++
           npm install --ignore-scripts && npm build:duckdb && npm build:addon
       - run: |
           zip -j node-duckdb-arm64.zip build/Release
