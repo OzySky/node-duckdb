@@ -40,7 +40,7 @@ jobs:
           sudo ldconfig -v
       - name: Install modules and build
         run: |
-          sudo ln -sf $(pwd)/aarch64-linux-musl-cross/aarch64-linux-musl/include/c++/11.2.1/wchar.h /usr/include/wchar.h
+          sudo apt-get purge libc4 libc6-dev -y -qq
           export CC=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc
           export CXX=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-g++
           yarn install --ignore-scripts && yarn build:duckdb && yarn build:addon
