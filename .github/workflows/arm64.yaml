@@ -11,7 +11,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: pwd
       - name: Checkout node-duckdb
         uses: actions/checkout@v3
       - name: Setup node
@@ -30,11 +29,12 @@ jobs:
           tar -xf aarch64-linux-musl-cross.tgz
       - name: Install OpenSSL 1.1.1
         run: |
+          export AMUSL=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-
           sudo apt-get install build-essential checkinstall zlib1g-dev -y -qq
           wget https://www.openssl.org/source/openssl-1.1.1n.tar.gz
           tar -xf openssl-1.1.1n.tar.gz
           cd openssl-1.1.1n
-          ./Configure linux-aarch64 --cross-compile-prefix=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl- --prefix=/usr/local/ssl --openssldir=/usr/local/ssl -static zlib
+          ./Configure linux-aarch64 --cross-compile-prefix=$(echo $AMUSL) --prefix=/usr/local/ssl --openssldir=/usr/local/ssl -static zlib
           make
           make install
           echo "/usr/local/ssl/lib" > /etc/ld.so.conf.d/openssl-1.1.1n.conf
