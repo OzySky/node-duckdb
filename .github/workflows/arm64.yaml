@@ -40,6 +40,7 @@ jobs:
           sudo ldconfig -v
       - name: Install modules and build
         run: |
+          sudo apt-get install gcc-multilib g++-multilib -y -qq
           export CC=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc
           export CXX=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-g++
           yarn install && yarn build:duckdb && yarn build:addon
