@@ -28,14 +28,16 @@ jobs:
           wget -q https://musl.cc/aarch64-linux-musl-cross.tgz
           tar -xf aarch64-linux-musl-cross.tgz
       - name: Install OpenSSL 1.1.1
+        env: 
+          CXXFLAGS: -fPIC
         run: |
           export AMUSL=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-
           wget https://www.openssl.org/source/openssl-1.1.1n.tar.gz
           tar -xf openssl-1.1.1n.tar.gz
           cd openssl-1.1.1n
-          ./Configure linux-aarch64 --cross-compile-prefix=$(echo $AMUSL) --prefix=/usr/local/ssl --openssldir=/usr/local/ssl -static no-zlib
+          ./Configure linux-aarch64 --cross-compile-prefix=$(echo $AMUSL) --prefix=/usr/local/ssl --openssldir=/usr/local/ssl no-zlib shared CXXFLAGS=-fPIC
           sudo make
-          sudo make install
+          sudo make install_sw
           sudo sh -c "echo '/usr/local/ssl/lib' >> /etc/ld.so.conf.d/openssl-1.1.1n.conf"
           sudo ldconfig -v
       - name: Install modules and build
@@ -49,8 +51,14 @@ jobs:
           yarn install --ignore-scripts && yarn build:duckdb && yarn build:addon
       - run: |
           zip -j build-arm64.zip build/Release
-      - uses: actions/upload-artifact@v2
+          zip -j duckdb_cli-linux-arm64.zip duckdb/build/release/duckdb
+      - uses: actions/upload-artifact@v3
         with:
           name: node-duckdb-arm64
           path: |
             node-duckdb-arm64.zip
+      - uses: actions/upload-artifact@v3
+        with:
+          name: duckdb-cli-arm64
+          path: |
+            duckdb_cli-linux-arm64.zip
