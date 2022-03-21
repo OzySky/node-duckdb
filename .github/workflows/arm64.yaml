@@ -40,10 +40,10 @@ jobs:
           sudo ldconfig -v
       - name: Install modules and build
         run: |
-          ln -s $(pwd)/aarch64-linux-musl-cross/aarch64-linux-musl/include/c++/11.2.1/wchar.h /usr/include/wchar.h
+          ln -sf $(pwd)/aarch64-linux-musl-cross/aarch64-linux-musl/include/c++/11.2.1/wchar.h /usr/include/wchar.h
           export CC=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc
           export CXX=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-g++
-          yarn install && yarn build:duckdb && yarn build:addon
+          yarn install --ignore-scripts && yarn build:duckdb && yarn build:addon
       - run: |
           zip -j build-arm64.zip build/Release
       - uses: actions/upload-artifact@v2
