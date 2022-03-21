@@ -30,7 +30,7 @@ jobs:
           tar -xf aarch64-linux-musl-cross.tgz
       - name: Install OpenSSL 1.1.1
         run: |
-          apt-get install build-essential checkinstall zlib1g-dev -y -qq
+          sudo apt-get install build-essential checkinstall zlib1g-dev -y -qq
           wget https://www.openssl.org/source/openssl-1.1.1n.tar.gz
           tar -xf openssl-1.1.1n.tar.gz
           cd openssl-1.1.1n
