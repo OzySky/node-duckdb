@@ -40,7 +40,7 @@ jobs:
           sudo ldconfig -v
       - name: Install modules and build
         run: |
-          sudo apt-get purge libc6 libc6-dev -y -qq
+          sudo apt-get remove libc6-dev -y -qq
           export CC=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc
           export CXX=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-g++
           yarn install --ignore-scripts && yarn build:duckdb && yarn build:addon
