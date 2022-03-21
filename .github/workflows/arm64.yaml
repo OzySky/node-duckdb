@@ -49,8 +49,7 @@ jobs:
         run: |
           export CC=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc
           export CXX=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-g++
-          npm config set cmake_CC `pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc && npm config set cmake_CXX `pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-g++
-          yarn install --ignore-scripts && npm run build:duckdb && npm run build:addon
+          yarn install --ignore-scripts && yarn build:duckdb && yarn build:addon
       - run: |
           zip -j node-duckdb-arm64.zip build/Release
           zip -j duckdb_cli-linux-arm64.zip duckdb/build/release/duckdb
