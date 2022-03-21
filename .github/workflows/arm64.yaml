@@ -41,6 +41,7 @@ jobs:
       - name: Install modules and build
         env:
           OPENSSL_ROOT_DIR: /usr/local/ssl
+          CXXFLAGS: -fPIC
         run: |
           sudo apt-get remove libc6-dev -y -qq
           export CC=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc
