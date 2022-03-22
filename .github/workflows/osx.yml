@@ -1,0 +1,68 @@
+name: OSX-10.13
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    name: OSX Release
+    runs-on: macos-10.15
+    env:
+      BUILD_UNITTESTS: 0
+      BUILD_FTS: 1
+      BUILD_HTTPFS: 1
+      BUILD_JSON: 1
+      STATIC_OPENSSL: 1
+      MACOSX_DEPLOYMENT_TARGET: 10.13
+
+    steps:
+      - name: Checkout node-duckdb
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 17
+          registry-url: https://npm.pkg.github.com/
+      - name: Checkout duckdb
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          repository: 'duckdb/duckdb'
+          path: duckdb
+        
+      - name: Install OpenSSL
+        run: |
+          mkdir -p build/openssl
+          cd build/openssl
+          mkdir sources build
+          curl https://www.openssl.org/source/openssl-1.1.1n.tar.gz | tar x -C sources --strip-components 1
+          export OPENSSL_ROOT_DIR=`pwd`/build
+          cd sources
+          export CC="clang -arch x86_64"
+          perl ./Configure --prefix=$OPENSSL_ROOT_DIR darwin64-x86_64-cc no-asm
+          make -j
+          make install_sw
+      - name: Build DuckDB & node-duckdb
+        run: |
+          export OPENSSL_ROOT_DIR=`pwd`/build/openssl/build
+          export CC=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc
+          export CXX=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-g++
+          yarn install --ignore-scripts && yarn build:duckdb && yarn build:addon
+      - run: |
+          zip -j node-duckdb-osx-amd64.zip build/Release/*
+          zip -j duckdb_cli-osx-amd64.zip duckdb/build/release/duckdb
+      - uses: actions/upload-artifact@v3
+        with:
+          name: node-duckdb-osx-amd64
+          path: |
+            node-duckdb-osx-amd64.zip
+      - uses: actions/upload-artifact@v3
+        with:
+          name: duckdb-cli-osx-amd64
+          path: |
+            duckdb_cli-osx-amd64.zip
