@@ -44,7 +44,7 @@ jobs:
           export OPENSSL_ROOT_DIR=`pwd`/build
           cd sources
           export CC="clang -arch x86_64"
-          perl ./Configure --prefix=$OPENSSL_ROOT_DIR darwin64-x86_64-cc no-asm
+          perl ./Configure --prefix=$OPENSSL_ROOT_DIR darwin64-x86_64-cc no-asm no-shared
           make -j
           make install_sw
       - name: Build DuckDB & node-duckdb
