@@ -50,8 +50,6 @@ jobs:
       - name: Build DuckDB & node-duckdb
         run: |
           export OPENSSL_ROOT_DIR=`pwd`/build/openssl/build
-          export CC=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc
-          export CXX=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-g++
           yarn install --ignore-scripts && yarn build:duckdb && yarn build:addon
       - run: |
           zip -j node-duckdb-osx-amd64.zip build/Release/*
