@@ -146,7 +146,7 @@ Napi::Value ResultIterator::getCellValue(Napi::Env env, duckdb::idx_t col_idx) {
 }
 
 Napi::Value ResultIterator::getMappedValue(Napi::Env env, duckdb::Value value) {
-  if (value.isNull()) {
+  if (value.IsNull()) {
     return env.Null();
   }
 
