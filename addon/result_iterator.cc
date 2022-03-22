@@ -146,7 +146,7 @@ Napi::Value ResultIterator::getCellValue(Napi::Env env, duckdb::idx_t col_idx) {
 }
 
 Napi::Value ResultIterator::getMappedValue(Napi::Env env, duckdb::Value value) {
-  if (value.is_null) {
+  if (value.isNull()) {
     return env.Null();
   }
 
@@ -183,10 +183,10 @@ Napi::Value ResultIterator::getMappedValue(Napi::Env env, duckdb::Value value) {
   case duckdb::LogicalTypeId::VARCHAR:
     return Napi::String::New(env, value.GetValue<string>());
   case duckdb::LogicalTypeId::BLOB: {
-    int array_length = value.str_value.length();
+    int array_length = duckdb::StringValue::Get(value).length();
     char char_array[array_length + 1];
     // TODO: multiple copies, improve
-    strcpy(char_array, value.str_value.c_str());
+    strcpy(char_array, duckdb::StringValue::Get(value).c_str());
     return Napi::Buffer<char>::Copy(env, char_array, array_length);
   }
   case duckdb::LogicalTypeId::TIMESTAMP: {
@@ -215,8 +215,8 @@ Napi::Value ResultIterator::getMappedValue(Napi::Env env, duckdb::Value value) {
     return Napi::Number::New(env, value.GetValue<int64_t>());
   case duckdb::LogicalTypeId::LIST: {
     auto array = Napi::Array::New(env);
-    for (size_t i = 0; i < value.list_value.size(); i++) {
-      auto &element = value.list_value[i];
+    for (size_t i = 0; i < duckdb::ListValue::GetChildren(value).size(); i++) {
+      auto &element = duckdb::ListValue::GetChildren(value)[i];
       auto mapped_value = getMappedValue(env, element);
       array.Set(i, mapped_value);
     }
@@ -224,10 +224,10 @@ Napi::Value ResultIterator::getMappedValue(Napi::Env env, duckdb::Value value) {
   }
   case duckdb::LogicalTypeId::STRUCT: {
     auto object = Napi::Object::New(env);
-    for (size_t i = 0; i < value.struct_value.size(); i++) {
+    for (size_t i = 0; i < duckdb::StructValue::GetChildren(value).size(); i++) {
       auto &child_types = duckdb::StructType::GetChildTypes(value.type());
       auto &key = child_types[i].first;
-      auto &element = value.struct_value[i];
+      auto &element = duckdb::StructValue::GetChildren(value)[i];
       auto child_value = getMappedValue(env, element);
       object.Set(key, child_value);
     }
