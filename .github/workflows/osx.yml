@@ -37,8 +37,8 @@ jobs:
         
       - name: Install OpenSSL
         run: |
-          mkdir -p build/openssl
-          cd build/openssl
+          mkdir -p openssl
+          cd openssl
           mkdir sources build
           curl https://www.openssl.org/source/openssl-1.1.1n.tar.gz | tar x -C sources --strip-components 1
           export OPENSSL_ROOT_DIR=`pwd`/build
@@ -49,7 +49,7 @@ jobs:
           make install_sw
       - name: Build DuckDB & node-duckdb
         run: |
-          export OPENSSL_ROOT_DIR=`pwd`/build/openssl/build
+          export OPENSSL_ROOT_DIR=`pwd`/openssl/build
           yarn install --ignore-scripts && yarn build:duckdb && yarn build:addon
       - run: |
           zip -j node-duckdb-osx-amd64.zip build/Release/*
