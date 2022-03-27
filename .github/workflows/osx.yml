@@ -48,15 +48,18 @@ jobs:
           make -j
           make install_sw
       - name: Build DuckDB & node-duckdb
+        env:
+          GEN: ninja
         run: |
+          brew install ninja
           export OPENSSL_ROOT_DIR=`pwd`/openssl/build
           yarn install --ignore-scripts && yarn build:duckdb && yarn build:addon
       - run: |
-          zip -j node-duckdb-osx-amd64.zip build/Release/*
+          zip -j node-duckdb-osx-amd64.zip build/Release/libduckdb.dylib build/Release/node-duckdb.addon
           zip -j duckdb_cli-osx-amd64.zip duckdb/build/release/duckdb
       - uses: actions/upload-artifact@v3
         with:
-          name: node-duckdb-osx-amd64
+          name: node-duckdb_osx-amd64
           path: |
             node-duckdb-osx-amd64.zip
       - uses: actions/upload-artifact@v3
