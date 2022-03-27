@@ -23,16 +23,16 @@ jobs:
         with:
           fetch-depth: 0
           repository: 'duckdb/duckdb'
-          path: duckdb
+          path: duckdb  
       - name: Setup cross toolchain
+        # Alpine 3.15 ships with libstc++.28 so we must build with gcc 10 until 3.16 is shipped
         run: |
-          wget -q https://musl.cc/aarch64-linux-musl-cross.tgz
+          sudo apt-get remove libc6-dev libssl-dev -y -qq
+          sudo apt-get install ninja-build
+          wget -q http://more.musl.cc/10/x86_64-linux-musl/aarch64-linux-musl-cross.tgz # Alpine 3.15 ships with libstc++.28 so we must build with gcc 10 until 3.16 is shipped
           tar -xf aarch64-linux-musl-cross.tgz
       - name: Build & install OpenSSL 1.1.1
-        env: 
-          CXXFLAGS: -fPIC
         run: |
-          sudo apt-get remove libc6-dev -y -qq
           export AMUSL=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-
           wget https://www.openssl.org/source/openssl-1.1.1n.tar.gz
           tar -xf openssl-1.1.1n.tar.gz
@@ -40,18 +40,18 @@ jobs:
           ./Configure linux-aarch64 --cross-compile-prefix=$(echo $AMUSL) --prefix=/usr/local/ssl --openssldir=/usr/local/ssl no-zlib shared CXXFLAGS=-fPIC
           sudo make
           sudo make install_sw
-          sudo sh -c "echo '/usr/local/ssl/lib' >> /etc/ld.so.conf.d/openssl-1.1.1n.conf"
-          sudo ldconfig -v
       - name: Build DuckDB & node-duckdb
         env:
+          BUILD_JSON: 1
+          BUILD_HTTPFS: 1
+          BUILD_FTS: 1
           OPENSSL_ROOT_DIR: /usr/local/ssl
-          CXXFLAGS: -fPIC
         run: |
           export CC=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc
           export CXX=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-g++
-          yarn install --ignore-scripts && yarn build:duckdb && yarn build:addon
+          yarn install --ignore-scripts && cd duckdb && GEN=ninja make && cd - && yarn build:addon
       - run: |
-          zip -j node-duckdb-arm64.zip build/Release/*
+          zip -j node-duckdb-arm64.zip build/Release/libduckdb.so build/Release/node-duckdb.addon
           zip -j duckdb_cli-linux-arm64.zip duckdb/build/release/duckdb
       - uses: actions/upload-artifact@v3
         with:
