@@ -66,3 +66,10 @@ jobs:
           name: duckdb-cli-osx-amd64
           path: |
             duckdb_cli-osx-amd64.zip
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            duckdb_cli-osx-amd64.zip
+            node-duckdb-osx-amd64.zip
