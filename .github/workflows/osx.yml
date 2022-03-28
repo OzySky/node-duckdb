@@ -34,8 +34,7 @@ jobs:
           fetch-depth: 0
           repository: 'duckdb/duckdb'
           path: duckdb
-        
-      - name: Install OpenSSL
+      - name: Download & build OpenSSL
         run: |
           mkdir -p openssl
           cd openssl
@@ -55,7 +54,7 @@ jobs:
           export OPENSSL_ROOT_DIR=`pwd`/openssl/build
           yarn install --ignore-scripts && yarn build:duckdb && yarn build:addon
       - run: |
-          zip -j node-duckdb-osx-amd64.zip build/Release/libduckdb.dylib build/Release/node-duckdb.addon
+          zip -j node-duckdb-osx-amd64.zip build/Release/libduckdb.dylib build/Release/node-duckdb-addon.node
           zip -j duckdb_cli-osx-amd64.zip duckdb/build/release/duckdb
       - uses: actions/upload-artifact@v3
         with:
