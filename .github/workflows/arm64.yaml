@@ -48,23 +48,23 @@ jobs:
           export CXX=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-g++
           yarn install --ignore-scripts && cd duckdb && make && cd - && yarn build:addon
       - run: |
-          zip -j node-duckdb-arm64-musl.zip build/Release/libduckdb.so build/Release/node-duckdb-addon.node
-          zip -j duckdb_cli-arm64-musl.zip duckdb/build/release/duckdb
+          tar -czf node-duckdb-arm64-musl.tar.gz build/Release/libduckdb.so build/Release/node-duckdb-addon.node
+          tar -czf duckdb_cli-arm64-musl.tar.gz duckdb/build/release/duckdb
       - uses: actions/upload-artifact@v3
         with:
           name: node-duckdb-arm64
           path: |
-            node-duckdb-arm64-musl.zip
+            node-duckdb-arm64-musl.tar.gz
       - uses: actions/upload-artifact@v3
         with:
           name: duckdb-cli-arm64
           path: |
-            duckdb_cli-arm64-musl.zip
+            duckdb_cli-arm64-musl.tar.gz
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            duckdb_cli-arm64-musl.zip
-            node-duckdb-arm64-musl.zip
+            duckdb_cli-arm64-musl.tar.gz
+            node-duckdb-arm64-musl.tar.gz
       
