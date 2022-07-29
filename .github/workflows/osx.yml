@@ -11,7 +11,7 @@ defaults:
 jobs:
   build:
     name: OSX Release
-    runs-on: macos-10.15
+    runs-on: macos-11
     env:
       BUILD_UNITTESTS: 0
       BUILD_FTS: 1
