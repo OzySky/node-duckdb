@@ -45,7 +45,7 @@ Connection::Connection(const Napi::CallbackInfo &info)
 
   duckdb::DBConfig config;
   if (read_only)
-    config.access_mode = duckdb::AccessMode::READ_ONLY;
+    config.options.access_mode = duckdb::AccessMode::READ_ONLY;
 
   auto unwrappedDb = DuckDB::Unwrap(info[0].ToObject());
   if (unwrappedDb->IsClosed()) {
