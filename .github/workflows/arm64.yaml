@@ -27,7 +27,7 @@ jobs:
         run: |
           sudo apt-get remove libc6-dev libssl-dev -y -qq
           sudo apt-get install ninja-build
-          wget -q http://more.musl.cc/10/x86_64-linux-musl/aarch64-linux-musl-cross.tgz
+          wget -q https://more.musl.cc/10/x86_64-linux-musl/aarch64-linux-musl-cross.tgz
           tar -xf aarch64-linux-musl-cross.tgz
       - name: Build & install OpenSSL 1.1.1
         run: |
