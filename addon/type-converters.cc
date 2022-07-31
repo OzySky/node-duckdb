@@ -59,45 +59,45 @@ void NodeDuckDB::TypeConverters::setDBConfig(const Napi::Env &env,
   auto optionsObject = config.Get("options").ToObject();
 
   if (!optionsObject.Get("accessMode").IsUndefined()) {
-    nativeConfig.access_mode = static_cast<duckdb::AccessMode>(
+    nativeConfig.options.access_mode = static_cast<duckdb::AccessMode>(
         convertEnum(env, optionsObject, "accessMode",
                     static_cast<int>(duckdb::AccessMode::UNDEFINED),
                     static_cast<int>(duckdb::AccessMode::READ_WRITE)));
   }
 
   if (!optionsObject.Get("checkPointWALSize").IsUndefined()) {
-    nativeConfig.checkpoint_wal_size =
+    nativeConfig.options.checkpoint_wal_size =
         convertNumber(env, optionsObject, "checkPointWALSize");
   }
 
   if (!optionsObject.Get("maximumMemory").IsUndefined()) {
-    nativeConfig.maximum_memory =
+    nativeConfig.options.maximum_memory =
         convertNumber(env, optionsObject, "maximumMemory");
   }
 
   if (!optionsObject.Get("useTemporaryDirectory").IsUndefined()) {
-    nativeConfig.use_temporary_directory =
+    nativeConfig.options.use_temporary_directory =
         convertBoolean(env, optionsObject, "useTemporaryDirectory");
   }
 
   if (!optionsObject.Get("temporaryDirectory").IsUndefined()) {
-    nativeConfig.temporary_directory =
+    nativeConfig.options.temporary_directory =
         convertString(env, optionsObject, "temporaryDirectory");
   }
 
   if (!optionsObject.Get("collation").IsUndefined()) {
-    nativeConfig.collation = convertString(env, optionsObject, "collation");
+    nativeConfig.options.collation = convertString(env, optionsObject, "collation");
   }
 
   if (!optionsObject.Get("defaultOrderType").IsUndefined()) {
-    nativeConfig.default_order_type = static_cast<duckdb::OrderType>(
+    nativeConfig.options.default_order_type = static_cast<duckdb::OrderType>(
         convertEnum(env, optionsObject, "defaultOrderType",
                     static_cast<int>(duckdb::OrderType::INVALID),
                     static_cast<int>(duckdb::OrderType::DESCENDING)));
   }
 
   if (!optionsObject.Get("defaultNullOrder").IsUndefined()) {
-    nativeConfig.default_null_order = static_cast<duckdb::OrderByNullType>(
+    nativeConfig.options.default_null_order = static_cast<duckdb::OrderByNullType>(
         convertEnum(env, optionsObject, "defaultNullOrder",
                     static_cast<int>(duckdb::OrderByNullType::INVALID),
                     static_cast<int>(duckdb::OrderByNullType::NULLS_LAST)));
