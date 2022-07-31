@@ -25,8 +25,9 @@ jobs:
       - name: Setup cross toolchain
         # Alpine 3.15 ships with libstc++.28 so we must build with gcc 10 until 3.16 is shipped
         run: |
-          sudo apt-get install -y ninja-build
-          wget -q --no-cache https://more.musl.cc/10/x86_64-linux-musl/aarch64-linux-musl-cross.tgz
+          sudo apt-get remove  --purge -y -qq libc6-dev libssl-dev man-db 
+          sudo apt-get install -y -qq ninja-build
+          wget -q https://more.musl.cc/10/x86_64-linux-musl/aarch64-linux-musl-cross.tgz
           tar -xf aarch64-linux-musl-cross.tgz
       - name: Build & install OpenSSL 1.1.1
         run: |
