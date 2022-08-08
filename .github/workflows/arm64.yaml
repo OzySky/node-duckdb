@@ -22,14 +22,20 @@ jobs:
           fetch-depth: 0
           repository: 'duckdb/duckdb'
           path: duckdb  
-      - name: Setup cross toolchain
+      - name: Setup cross toolchain (temp clone from old repo, until azure block is lifted see https://github.com/orgs/community/discussions/27906)
         # Alpine 3.15 ships with libstc++.28 so we must build with gcc 10 until 3.16 is shipped
-        run: |
-          curl -I https://more.musl.cc/10/x86_64-linux-musl/aarch64-linux-musl-cross.tgz
-          curl -kL -D /dev/stdout -O https://more.musl.cc/10/x86_64-linux-musl/aarch64-linux-musl-cross.tgz
-          tar -xf aarch64-linux-musl-cross.tgz
-          sudo apt-get remove  --purge -y -qq libc6-dev libssl-dev man-db 
-          sudo apt-get install -y -qq ninja-build
+#         run: |
+#           curl -I https://more.musl.cc/10/x86_64-linux-musl/aarch64-linux-musl-cross.tgz
+#           curl -kL -D /dev/stdout -O https://more.musl.cc/10/x86_64-linux-musl/aarch64-linux-musl-cross.tgz
+#           tar -xf aarch64-linux-musl-cross.tgz
+#           sudo apt-get remove  --purge -y -qq libc6-dev libssl-dev man-db 
+#           sudo apt-get install -y -qq ninja-build
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          repository: 'lovell/aarch64-linux-musl-crosstools'
+          path: aa
+      - run: cp -r aa/aarch64-linux-musl-cross aarch64-linux-musl-cross
       - name: Build & install OpenSSL 1.1.1
         run: |
           export AMUSL=`pwd`/aarch64-linux-musl-cross/bin/aarch64-linux-musl-
