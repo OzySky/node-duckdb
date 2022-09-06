@@ -28,7 +28,7 @@ void AsyncExecutor::Execute() {
       result = connection->SendQuery(query);
     }
     if (result.get()->HasError()) {
-      SetError(result.get()->GetErrorObject());
+      SetError(result.get()->GetError());
     }
   } catch (...) {
     SetError("Unknown Error: Something happened during execution of the query");
