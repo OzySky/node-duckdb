@@ -1,0 +1,61 @@
+name: Amd64 Build
+
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  amd64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout node-duckdb
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 17
+          registry-url: https://npm.pkg.github.com/
+      - name: Checkout duckdb
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          repository: 'duckdb/duckdb'
+          path: duckdb
+      - run: sudo apt-get install -y -qq ninja-build
+      - name: Setup cross toolchain (temp download from mirror, until azure block is lifted see https://github.com/orgs/community/discussions/27906)
+        # Alpine 3.15 ships with libstc++.28 so we must build with gcc 10 until 3.16 is shipped
+         run: |
+          wget -q https://skarnet.org/toolchains/native/x86_64-linux-musl_pc-10.3.0.tar.xz
+          tar -xf aarch64-linux-musl-cross.tgz
+      - name: Build DuckDB & node-duckdb
+        env:
+          BUILD_JSON: 1
+          BUILD_HTTPFS: 1
+          BUILD_FTS: 1
+          GEN: ninja
+        run: |
+          export CC=`pwd`/x86_64-linux-musl_pc-10.3.0/bin/gcc
+          export CXX=`pwd`/x86_64-linux-musl_pc-10.3.0/bin/g++
+          yarn install --ignore-scripts && cd duckdb && make && cd - && yarn build:addon
+      - run: |
+          tar -czf node-duckdb-amd64-musl.tar.gz build/Release/libduckdb.so build/Release/node-duckdb-addon.node
+          tar -czf duckdb_cli-amd64-musl.tar.gz duckdb/build/release/duckdb
+      - uses: actions/upload-artifact@v3
+        with:
+          name: node-duckdb-amd64
+          path: |
+            node-duckdb-amd64-musl.tar.gz
+      - uses: actions/upload-artifact@v3
+        with:
+          name: duckdb-cli-amd64
+          path: |
+            duckdb_cli-amd64-musl.tar.gz
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            duckdb_cli-amd64-musl.tar.gz
+            node-duckdb-amd64-musl.tar.gz
+      

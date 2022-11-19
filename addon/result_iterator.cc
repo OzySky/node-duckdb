@@ -179,7 +179,7 @@ Napi::Value ResultIterator::getMappedValue(Napi::Env env, duckdb::Value value) {
     return Napi::Number::New(env, value.GetValue<double>());
   case duckdb::LogicalTypeId::DECIMAL:
     return Napi::Number::New(
-        env, value.CastAs(duckdb::LogicalType::DOUBLE).GetValue<double>());
+        env, value.DefaultCastAs(duckdb::LogicalType::DOUBLE).GetValue<double>());
   case duckdb::LogicalTypeId::VARCHAR:
     return Napi::String::New(env, value.GetValue<string>());
   case duckdb::LogicalTypeId::BLOB: {
