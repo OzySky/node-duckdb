@@ -22,8 +22,8 @@ jobs:
           fetch-depth: 0
           repository: 'duckdb/duckdb'
           path: duckdb
-      - run: sudo apt-get install -y -qq ninja-build
-      - name: Setup cross toolchain (temp download from mirror, until azure block is lifted see https://github.com/orgs/community/discussions/27906)
+      - run: sudo apt-get install -y -qq ninja-build libssl-dev
+      - name: Setup musl native toolchain (temp download from mirror, until azure block is lifted see https://github.com/orgs/community/discussions/27906)
         # Alpine 3.15 ships with libstc++.28 so we must build with gcc 10 until 3.16 is shipped
         run: |
             wget -q https://skarnet.org/toolchains/native/x86_64-linux-musl_pc-10.3.0.tar.xz
@@ -34,9 +34,6 @@ jobs:
           BUILD_HTTPFS: 1
           BUILD_FTS: 1
           GEN: ninja
-          LDFLAGS: -L/usr/lib/x86_64-linux-gnu/
-          CFLAGS: -I/usr/include/openssl/
-          CPPFLAGS: -I/usr/include/openssl/
         run: |
           export CC=`pwd`/x86_64-linux-musl_pc-10.3.0/bin/gcc
           export CXX=`pwd`/x86_64-linux-musl_pc-10.3.0/bin/g++
