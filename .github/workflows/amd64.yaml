@@ -1,4 +1,4 @@
-name: Amd64 Build
+name: amd64 build
 
 on:
   push:
@@ -25,9 +25,9 @@ jobs:
       - run: sudo apt-get install -y -qq ninja-build
       - name: Setup cross toolchain (temp download from mirror, until azure block is lifted see https://github.com/orgs/community/discussions/27906)
         # Alpine 3.15 ships with libstc++.28 so we must build with gcc 10 until 3.16 is shipped
-         run: |
-          wget -q https://skarnet.org/toolchains/native/x86_64-linux-musl_pc-10.3.0.tar.xz
-          tar -xf aarch64-linux-musl-cross.tgz
+        run: |
+            wget -q https://skarnet.org/toolchains/native/x86_64-linux-musl_pc-10.3.0.tar.xz
+            tar -xf x86_64-linux-musl_pc-10.3.0.tar.xz
       - name: Build DuckDB & node-duckdb
         env:
           BUILD_JSON: 1
