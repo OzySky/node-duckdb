@@ -27,7 +27,17 @@ jobs:
         # Alpine 3.15 ships with libstc++.28 so we must build with gcc 10 until 3.16 is shipped
         run: |
             wget -q https://skarnet.org/toolchains/native/x86_64-linux-musl_pc-10.3.0.tar.xz
-            tar -xf x86_64-linux-musl_pc-10.3.0.tar.xz
+            tar -xf x86_64-linux-musl_pc-10.3.0.tar.xz      
+      - name: Build & install OpenSSL 1.1.1
+        run: |
+          export CC=`pwd`/x86_64-linux-musl_pc-10.3.0/bin/gcc
+          export CXX=`pwd`/x86_64-linux-musl_pc-10.3.0/bin/g++
+          wget https://www.openssl.org/source/openssl-1.1.1n.tar.gz
+          tar -xf openssl-1.1.1n.tar.gz
+          cd openssl-1.1.1n
+          ./config no-zlib shared CXXFLAGS=-fPIC
+          sudo make
+          sudo make install_sw
       - name: Build DuckDB & node-duckdb
         env:
           BUILD_JSON: 1
