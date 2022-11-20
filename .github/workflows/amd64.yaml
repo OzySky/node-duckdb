@@ -34,6 +34,9 @@ jobs:
           BUILD_HTTPFS: 1
           BUILD_FTS: 1
           GEN: ninja
+          LDFLAGS: -L/usr/lib/x86_64-linux-gnu/
+          CFLAGS: -I/usr/include/openssl/
+          CPPFLAGS: -I/usr/include/openssl/
         run: |
           export CC=`pwd`/x86_64-linux-musl_pc-10.3.0/bin/gcc
           export CXX=`pwd`/x86_64-linux-musl_pc-10.3.0/bin/g++
