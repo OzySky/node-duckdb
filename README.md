@@ -1,18 +1,16 @@
 # Node-DuckDB
 
-###### [API](https://github.com/deepcrawl/node-duckdb/blob/master/docs/api/node-duckdb.md) | [Code Of Conduct](https://github.com/deepcrawl/node-duckdb/blob/master/docs/CODE_OF_CONDUCT.md) | [Contributing](https://github.com/deepcrawl/node-duckdb/blob/master/docs/CONTRIBUTING.md) | [Developing](https://github.com/deepcrawl/node-duckdb/blob/master/docs/DEVELOPING.md)
-
+###### [API](https://github.com/deepcrawl/node-duckdb/blob/master/docs/api/node-duckdb.md)
 > Production ready DuckDB Node.js library written in TypeScript.
-> [<img src="https://www.deepcrawl.com/wp-content/themes/deepcrawl/images/logo-dark.svg" height="200" width="300" align="right">](https://www.deepcrawl.com/)
 
 ## Overview
 
 - This is a library that adds support for [DuckDB](https://duckdb.org/) to NodeJS.
-- It comes preinstalled with DuckDB ver 0.2.6+ with the **parquet** extension included.
+- It comes preinstalled with DuckDB ver 0.8.1 with the **parquet** and **httpfs** extension included.
 - Has been tested to work with Linux and MacOS.
-- Currently supports NodeJS v12.17.0+.
+- Currently supports NodeJS v17.9.0+.
 - Supports BIGINT and HUGEINT types as [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt).
-- Provides a **Promise**-based API and a **Stream**-based one.
+- Provides both **Promise** and **Stream** API's.
 
 ## Getting Started
 
@@ -84,9 +82,6 @@ const resultStream = await connection.execute("SELECT * FROM people;");
 resultStream.pipe(destinationStream);
 ```
 
-#### Complete sample project
-
-You can see a complete sample project using node-duckdb [here](https://github.com/deepcrawl/node-duckdb/tree/master/examples).
 
 ## API
 
