@@ -12,7 +12,7 @@ public:
   static Napi::Object Init(Napi::Env env, Napi::Object exports);
   ResultIterator(const Napi::CallbackInfo &info);
   static Napi::Object Create();
-  std::unique_ptr<duckdb::QueryResult, std::default_delete<duckdb::QueryResult>>;
+  std::unique_ptr<duckdb::QueryResult> result;
   ResultFormat rowResultFormat;
   void close();
 
