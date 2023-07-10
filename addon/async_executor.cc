@@ -39,7 +39,7 @@ void AsyncExecutor::OnOK() {
   Napi::HandleScope scope(Env());
   Napi::Object result_iterator = ResultIterator::Create();
   ResultIterator *result_unwrapped = ResultIterator::Unwrap(result_iterator);
-  result_unwrapped->result = result;
+  result_unwrapped->result = std::move(result);
   result_unwrapped->rowResultFormat = rowResultFormat;
   results->push_back(result_unwrapped);
   deferred.Resolve(result_iterator);
