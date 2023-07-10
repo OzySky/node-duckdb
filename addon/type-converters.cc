@@ -97,9 +97,9 @@ void NodeDuckDB::TypeConverters::setDBConfig(const Napi::Env &env,
   }
 
   if (!optionsObject.Get("defaultNullOrder").IsUndefined()) {
-    nativeConfig.options.default_null_order = static_cast<duckdb::OrderByNullType>(
+    nativeConfig.options.default_null_order = static_cast<duckdb::DefaultOrderByNullType>(
         convertEnum(env, optionsObject, "defaultNullOrder",
-                    static_cast<int>(duckdb::OrderByNullType::INVALID),
-                    static_cast<int>(duckdb::OrderByNullType::NULLS_LAST)));
+                    static_cast<int>(duckdb::DefaultOrderByNullType::INVALID),
+                    static_cast<int>(duckdb::DefaultOrderByNullType::NULLS_LAST)));
   }
 }
